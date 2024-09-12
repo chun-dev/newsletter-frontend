@@ -1,18 +1,46 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { AppRoot } from "./routes/app/root";
 
 export const createAppRouter = () =>
   createBrowserRouter([
     {
-      path: "/",
-      lazy: async () => {
-        const { LandingRoute } = await import("./routes/landing");
-        return { Component: LandingRoute };
-      },
+      path: "/app",
+      element: <AppRoot />,
+      children: [
+        {
+          path: "",
+          lazy: async () => {
+            const { TestingRoute } = await import("./routes/app/test");
+            return { Component: TestingRoute };
+          },
+        },
+        {
+          path: "2024",
+          lazy: async () => {
+            const { YearRoute } = await import("./routes/app/year");
+            return { Component: YearRoute };
+          },
+        },
+        {
+          path: "gallery",
+          lazy: async () => {
+            const { GalleryRoute } = await import("./routes/app/gallery");
+            return { Component: GalleryRoute };
+          },
+        },
+        {
+          path: "month",
+          lazy: async () => {
+            const { MonthRoute } = await import("./routes/app/month");
+            return { Component: MonthRoute };
+          },
+        },
+      ],
     },
     {
       path: "/test",
       lazy: async () => {
-        const { TestingRoute } = await import("./routes/test");
+        const { TestingRoute } = await import("./routes/app/test");
         return { Component: TestingRoute };
       },
     },

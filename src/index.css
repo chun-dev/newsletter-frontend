@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Jersey+25&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        @apply font-custom;
+    }
+    body {
+        @apply bg-blog-color2;
+    }
+
+    * {
+        @apply leading-none;
+    }
+}
+
+/* .post-container > :nth-child(odd) {
+    @apply bg-blog-color;
+} */
+
+.post-container > :nth-child(even) {
+    @apply bg-blog-color;
+}
