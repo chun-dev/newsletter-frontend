@@ -4,6 +4,13 @@ import { AppRoot } from './routes/app/root'
 export const createAppRouter = () =>
     createBrowserRouter([
         {
+            path: '/auth/login',
+            lazy: async () => {
+                const { LoginRoute } = await import('./routes/auth/login')
+                return { Component: LoginRoute }
+            },
+        },
+        {
             path: '/app',
             element: <AppRoot />,
             children: [
