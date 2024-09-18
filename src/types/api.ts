@@ -4,6 +4,12 @@ export type Post = {
     content: string
 }
 
+export type CreatePost = {
+    date: Date
+    title: string
+    content: string
+}
+
 export type User = {
     email: string
 }

@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import * as React from 'react'
 import { queryConfig } from '@/lib/react-query'
 
@@ -16,6 +17,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 
     return (
         <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools />
             {children}
         </QueryClientProvider>
     )

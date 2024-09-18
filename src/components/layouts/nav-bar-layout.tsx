@@ -1,6 +1,8 @@
+import { useUser } from '@/lib/auth'
 import { Link } from 'react-router-dom'
 
 export function NavBarLayout({ children }: { children: React.ReactNode }) {
+    const user = useUser()
     return (
         <>
             <nav className="flex justify-center bg-blog-color py-10">
@@ -29,6 +31,14 @@ export function NavBarLayout({ children }: { children: React.ReactNode }) {
                     >
                         This Month
                     </Link>
+                    {user.data && (
+                        <Link
+                            to="./createPost"
+                            className="rounded-3xl px-3 py-1 text-bigBlogSnippetContent font-medium text-black hover:bg-test-hover-color"
+                        >
+                            Create Post
+                        </Link>
+                    )}
                 </div>
             </nav>
             <div> {children}</div>

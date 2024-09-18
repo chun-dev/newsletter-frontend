@@ -40,6 +40,15 @@ export const createAppRouter = () =>
                     },
                 },
                 {
+                    path: 'createPost',
+                    lazy: async () => {
+                        const { CreatePostRoute } = await import(
+                            './routes/app/createPost'
+                        )
+                        return { Component: CreatePostRoute }
+                    },
+                },
+                {
                     path: '',
                     lazy: async () => {
                         const { HomeRoute } = await import('./routes/app/home')
