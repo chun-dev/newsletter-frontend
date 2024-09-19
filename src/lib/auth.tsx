@@ -37,7 +37,11 @@ export const { useUser, useLogin, useLogout, useRegister, AuthLoader } =
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     const user = useUser()
     const location = useLocation()
-    if (!user.data) {
+
+    if (!user.isFetched) {
+        return <div>loading...</div>
+    }
+    if (user.isFetched && !user.data) {
         return (
             <Navigate
                 to={`/auth/login?redirectTo=${encodeURIComponent(location.pathname)}`}

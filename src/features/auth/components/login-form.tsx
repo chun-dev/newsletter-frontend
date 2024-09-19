@@ -38,7 +38,9 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
                         <input
                             value={password}
                             placeholder="Enter your password here"
-                            onChange={(event) => setPassword(event.target.value)}
+                            onChange={(event) =>
+                                setPassword(event.target.value)
+                            }
                         />
                     </div>
                     <br />

@@ -1,10 +1,22 @@
-import { useUser } from '@/lib/auth'
-import { Link } from 'react-router-dom'
+import { useLogout, useUser } from '@/lib/auth'
+import { Link, useNavigate } from 'react-router-dom'
 
 export function NavBarLayout({ children }: { children: React.ReactNode }) {
     const user = useUser()
+    const navigate = useNavigate()
+    const logout = useLogout()
+
+    const handleLogout = () => {
+        navigate('/app')
+        logout.mutate()
+    }
     return (
         <>
+            {user.data && (
+                <div className="flex justify-end bg-blog-color p-2">
+                    <button onClick={handleLogout}>Log Out</button>
+                </div>
+            )}
             <nav className="flex justify-center bg-blog-color py-10">
                 <div className="flex rounded-3xl border-2 border-black bg-nav-bar-color shadow-md shadow-black">
                     <Link

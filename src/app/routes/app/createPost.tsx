@@ -1,5 +1,5 @@
 import { CreatePost } from '@/features/posts/components/create-post'
-import { ProtectedRoute } from '@/lib/auth';
+import { ProtectedRoute } from '@/lib/auth'
 
 export const CreatePostRoute = () => {
     return (
