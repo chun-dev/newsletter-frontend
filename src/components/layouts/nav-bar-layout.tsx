@@ -31,17 +31,17 @@ export function NavBarLayout({ children }: { children: React.ReactNode }) {
                     >
                         2024
                     </Link>
-                    <Link
+                    {/* <Link
                         to="./gallery"
                         className="rounded-3xl px-3 py-1 text-bigBlogSnippetContent font-medium text-black hover:bg-test-hover-color"
                     >
                         Gallery
-                    </Link>
+                    </Link> */}
                     <Link
-                        to="./month"
+                        to="./latest"
                         className="rounded-3xl px-3 py-1 text-bigBlogSnippetContent font-medium text-black hover:bg-test-hover-color"
                     >
-                        This Month
+                        Latest
                     </Link>
                     {user.data && (
                         <Link

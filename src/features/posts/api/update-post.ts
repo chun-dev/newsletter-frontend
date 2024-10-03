@@ -1,13 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-
-import { CreatePost, Post } from '@/types/api'
+import { Newsletter, UpdatePost } from '@/types/api'
 import { api } from '@/lib/api-client'
 
-export const createPost = (data: CreatePost): Promise<Post> => {
-    return api.post(`/create-post`, data)
+export const updatePost = (data: UpdatePost): Promise<Newsletter> => {
+    return api.post(`/update-post`, data)
 }
 
-export const useCreatePost = () => {
+export const useUpdatePost = () => {
     const queryClient = useQueryClient()
     return useMutation({
         onSuccess: () => {
@@ -15,6 +14,6 @@ export const useCreatePost = () => {
                 queryKey: ['posts'],
             })
         },
-        mutationFn: createPost,
+        mutationFn: updatePost,
     })
 }

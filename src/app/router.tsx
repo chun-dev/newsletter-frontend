@@ -31,7 +31,16 @@ export const createAppRouter = () =>
                     },
                 },
                 {
-                    path: 'month',
+                    path: 'latest',
+                    lazy: async () => {
+                        const { LatestRoute } = await import(
+                            './routes/app/latest'
+                        )
+                        return { Component: LatestRoute }
+                    },
+                },
+                {
+                    path: 'posts/:year/:month',
                     lazy: async () => {
                         const { MonthRoute } = await import(
                             './routes/app/month'

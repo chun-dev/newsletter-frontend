@@ -1,81 +1,150 @@
-import { useState } from 'react'
-
-import { DayPicker } from 'react-day-picker'
-import 'react-day-picker/style.css'
+import { useEffect, useState } from 'react'
+import { Select } from '@headlessui/react'
 import { useCreatePost } from '../api/create-post'
+import { useGetNewsletter } from '../../newsletters/api/get-newsletter'
+import { NewsletterTitle } from '../../newsletters/components/newsletter-title'
+import { ListPosts } from './list-posts'
+import { useCreateNewsletter } from '../../newsletters/api/create-newsletter'
+import { EditModal } from '@/components/ui/editModal'
+import { convertMonth, monthSelect } from '@/utils/formatDate'
 
 export const CreatePost = () => {
-    const [selected, setSelected] = useState<Date>()
-    const [dateError, setDateError] = useState<string>('')
-
-    const [title, setTitle] = useState<string>('')
-    const [titleError, setTitleError] = useState<string>('')
-
-    const [content, setContent] = useState<string>('')
-    const [contentError, setContentError] = useState<string>('')
+    const [newsLetterTitle, setNewsletterTitle] = useState<string>('')
+    const [newsLetterSubtitle, setNewsletterSubtitle] = useState<string>('')
+    const [year, setYear] = useState<string>('')
+    const [month, setMonth] = useState<string>('')
+    const [years, setYears] = useState<string[]>([])
+    const [postModalIsOpen, setPostModalIsOpen] = useState<boolean>(false)
+    const [newsletterModalIsOpen, setNewsletterModalIsOpen] =
+        useState<boolean>(false)
+    const [newPostTitle, setNewPostTitle] = useState<string>('')
+    const [newPostSubtitle, setNewPostSubtitle] = useState<string>('')
 
     const createPostMutation = useCreatePost()
+    const createNewsletterMutation = useCreateNewsletter()
+    const newsletterQuery = useGetNewsletter(year, convertMonth(month))
 
-    const handlePost = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        setDateError('')
-        setTitleError('')
-        setContentError('')
+    useEffect(() => {
+        let currentYear = new Date().getFullYear()
+        let earlierYear = 2023
+        let yearsArray = []
+        for (let i = currentYear; i >= earlierYear; i--) {
+            yearsArray.push(i.toString())
+        }
+        setYears(['', ...yearsArray])
+    }, [])
 
-        if (selected == undefined) {
-            setDateError('Please select a date')
-        }
-        if (title.length === 0) {
-            setTitleError('Title Cannot be empty')
-        }
-        if (content.length === 0) {
-            setContentError('Content Cannot be empty')
-        }
+    const handleAddPost = () => {
+        setPostModalIsOpen(true)
+    }
 
-        if (selected && title.length > 0 && content.length > 0) {
-            createPostMutation.mutate({
-                date: selected,
-                title: title,
-                content: content,
-            })
-        }
+    const handleAddNewsletter = () => {
+        setNewsletterModalIsOpen(true)
+    }
+
+    const newsletter = newsletterQuery.data?.data
+
+    const handleSavePost = () => {
+        let date = new Date(Number(year), Number(convertMonth(month)) - 1, 15)
+        createPostMutation.mutate({
+            date: date,
+            title: newPostTitle,
+            content: newPostSubtitle,
+        })
+        setPostModalIsOpen(false)
+    }
+
+    const handleSaveNewsletter = () => {
+        let date = new Date(Number(year), Number(convertMonth(month)) - 1, 15)
+        createNewsletterMutation.mutate({
+            date: date,
+            title: newsLetterTitle,
+            content: newsLetterSubtitle,
+        })
+        setNewsletterModalIsOpen(false)
     }
 
     return (
         <>
-            <form onSubmit={handlePost}>
-                <div className="flex flex-col items-center gap-10 pb-10">
-                    <DayPicker
-                        mode="single"
-                        selected={selected}
-                        onSelect={setSelected}
-                        footer={
-                            selected
-                                ? `Selected: ${selected.toLocaleDateString()}`
-                                : 'Pick a day.'
-                        }
-                    />
-                    {dateError.length > 0 && <div>{dateError}</div>}
-                    <div className="w-3/6">
-                        <h1>POST TITLE</h1>
-                        <input
-                            className="h-10 w-full"
-                            type="text"
-                            onChange={(event) => setTitle(event.target.value)}
-                        />
-                        {titleError.length > 0 && <div>{titleError}</div>}
-                    </div>
-                    <div className="w-3/6">
-                        <h1>POST CONTENT</h1>
-                        <textarea
-                            className="h-60 w-full p-2"
-                            onChange={(event) => setContent(event.target.value)}
-                        ></textarea>
-                        {contentError.length > 0 && <div>{contentError}</div>}
-                    </div>
-                    <button type="submit">Create Post</button>
+            <div>
+                <div className="flex justify-center pb-10">
+                    <Select
+                        name="status"
+                        aria-label="Project status"
+                        onChange={(event) => {
+                            setYear(event.target.value)
+                        }}
+                    >
+                        {years.map((year, index) => {
+                            return (
+                                <option value={year} key={index}>
+                                    {year == '' ? 'select year' : year}
+                                </option>
+                            )
+                        })}
+                    </Select>
+                    <Select
+                        name="status"
+                        aria-label="Project status"
+                        onChange={(event) => {
+                            setMonth(event.target.value)
+                        }}
+                    >
+                        {monthSelect.map((month, index) => {
+                            return (
+                                <option value={month} key={index}>
+                                    {month == '' ? 'Select month' : month}
+                                </option>
+                            )
+                        })}
+                    </Select>
                 </div>
-            </form>
+
+                {/* newsletter title */}
+                {newsletterQuery.isLoading && <div>is loading...</div>}
+                {newsletterQuery.isFetched && (
+                    <div>
+                        <NewsletterTitle year={year} month={month} />
+                    </div>
+                )}
+                {year && month && !newsletter && (
+                    <div className="flex justify-center p-10">
+                        <button onClick={handleAddNewsletter}>
+                            Add Newsletter
+                        </button>
+                    </div>
+                )}
+                {year && month && newsletter && (
+                    <div>
+                        <ListPosts year={year} month={month} />
+                        <div className="flex justify-center p-10">
+                            <button onClick={handleAddPost}>Add post</button>
+                        </div>
+                    </div>
+                )}
+
+                {postModalIsOpen && (
+                    <EditModal
+                        title={newPostTitle}
+                        editTitle={setNewPostTitle}
+                        subtitle={newPostSubtitle}
+                        editSubtitle={setNewPostSubtitle}
+                        handleSave={handleSavePost}
+                        setModalIsOpen={setPostModalIsOpen}
+                    />
+                )}
+
+                {newsletterModalIsOpen && (
+                    <EditModal
+                        title={newsLetterTitle}
+                        editTitle={setNewsletterTitle}
+                        subtitle={newsLetterSubtitle}
+                        editSubtitle={setNewsletterSubtitle}
+                        handleSave={handleSaveNewsletter}
+                        setModalIsOpen={setNewsletterModalIsOpen}
+                    />
+                )}
+            </div>
         </>
     )
 }
